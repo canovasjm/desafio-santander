@@ -1,4 +1,3 @@
-
 # required libraries
 import sys
 import os
@@ -16,11 +15,26 @@ from helpers.helpers import read_file_with_no_header
 from helpers.helpers import write_file_to_parquet
 
 
+def ingest_data(input_path: str, output_path: str, delimiter: str, header: str, extra_col_name=None, extra_col_value=None):
+    """
+    Function to ingest a text file with data. Parameters passed should be defined in an .env file.
 
-def ingest_data(input_path, output_path, delimiter, header, extra_col_name=None, extra_col_value=None):
+    Parameters
+    ----------
+    input_path : str
+        Path to the file to be read.
+    output_path : str
+        Path to the folder where the parquet file is going to be written.
+    delimiter : str
+        Field delimiter in the input text file.
+    header: str
+        Specifies if the file to be read has a header or not. Either `True` or `False`.
+    extra_col_name: str
+        Name of the extra column (default is None).
+    extra_col_value: str
+        The value for the extra column is a string representing a date in the format 'YYYY-MM-DD' (default is None).
     """
-    Function to ingest a text file with data. Parameters passed should be defined in an .env file
-    """
+
     # create spark session
     spark = create_spark_session()
 
@@ -68,7 +82,6 @@ def ingest_data(input_path, output_path, delimiter, header, extra_col_name=None,
 
 
 
-
 # main
 def main():
     
@@ -112,7 +125,7 @@ def main():
     ingest_data(input_path=input_path, output_path=output_path, delimiter=delimiter, 
                 header=header, extra_col_name=extra_col_name, extra_col_value=extra_col_value)
 
-    
+   
 
 if __name__ == "__main__":
-    main() 
+    main()

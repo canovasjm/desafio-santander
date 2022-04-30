@@ -1,14 +1,19 @@
-
 # required libraries
 from pyspark.sql import SparkSession
 from pyspark.sql import types
 from pyspark.sql import functions as F
 
+
 # custom functions
 def create_spark_session():
     """
-    Function to create the Spark session
+    Function to create the Spark session.
+
+    Returns
+    ----------
+    spark : spark session
     """
+
     spark = SparkSession.builder \
         .master("local[*]") \
         .appName('santander') \
@@ -19,8 +24,24 @@ def create_spark_session():
 
 def read_file_with_header(session, input_path: str, delimiter: str, header: str):
     """
-    Function to read a text file with header
+    Function to read a text file with header.
+
+    Parameters
+    ----------
+    session 
+        Spark session.
+    input_path : str
+        Path to the file to be read.
+    delimiter : str
+        Field delimiter in the input text file.
+    header: str
+        Specifies if the file to be read has a header or not. Either `True` or `False`.
+
+    Returns
+    ----------
+    df : pyspark dataframe
     """
+
     # define the schema
     schema = types.StructType([
         types.StructField('stock', types.StringType(), True),
@@ -43,8 +64,24 @@ def read_file_with_header(session, input_path: str, delimiter: str, header: str)
 
 def read_file_with_no_header(session, input_path: str, delimiter: str, header: str):
     """
-    Function to read a text file without header
+    Function to read a text file without header.
+
+    Parameters
+    ----------
+    session 
+        Spark session.
+    input_path : str
+        Path to the file to be read.
+    delimiter : str
+        Field delimiter in the input text file.
+    header: str
+        Specifies if the file to be read has a header or not. Either `True` or `False`.
+
+    Returns
+    ----------
+    df : pyspark dataframe
     """
+
     # read the file as pyspark data frame
     df = session.read \
         .options(delimiter=delimiter, header=header) \
@@ -67,7 +104,23 @@ def read_file_with_no_header(session, input_path: str, delimiter: str, header: s
 
 def write_file_to_parquet(df, output_path: str, repartition_col: str = 'stock', mode: str = 'overwrite'):
     """
-    Function to save a PySpark dataframe to parquet
+    Function to save a PySpark dataframe to parquet.
+
+    Parameters
+    ----------
+    df : pyspark dataframe
+        Pyspark dataframe to be saved as parquet file.
+    output_path : str
+        Path to the folder where the parquet file is going to be written.
+    repartition_col : str
+        Name of a column to repartition the pyspark dataframe (default is 'stock')
+    mode: str
+        Specifies the behavior of the save operation when data already exists. Possible values are:
+            'append': Append contents of this DataFrame to existing data.
+            'overwrite' (default case): Overwrite existing data.
+            'ignore': Silently ignore this operation if data already exists.
+            'error' or 'errorifexists': Throw an exception if data already exists.
     """
+
     # write the file to parquet
-    df.repartition(repartition_col).write.parquet(output_path, mode=mode)
+    df.repartition(repartition_col).write.parquet(path=output_path, mode=mode)
